@@ -10,7 +10,8 @@ function Body() {
             try {
                 const response = await fetch('/naren');
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    console.log("Error fetching nodes:", response.statusText);
+                    return;
                 }
                 const data = await response.json();
                 setNodes([data.node]);
@@ -25,7 +26,8 @@ function Body() {
         try {
             const response = await fetch(`/children/${id}`);
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                console.log("Error fetching children:", response.statusText);
+                return;
             }
             const data = await response.json();
             console.log(data)
