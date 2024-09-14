@@ -18,7 +18,7 @@ function Body() {
                 console.error('Error fetching nodes:', error);
             }
         };
-        if (nodes.length == 0) fetchData();
+        if (nodes.length === 0) fetchData();
     }, []);
 
     const fetchChildren = async (id) => {
