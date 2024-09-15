@@ -59,11 +59,17 @@ function Body() {
             .attr("stroke-opacity", 0.6);
 
         const node = svg
-            .selectAll("circle")
+            .join("g")
+            .selectAll("image")
             .data(root.descendants())
-            .join("circle")
-            .attr("r", 5)
-            .attr("fill", "white")
+            .join("image")
+            .attr("href", d => {
+                console.log(d.data.data.tags[0])
+                return `https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/Naren.png`
+            })
+            .attr("width", 80)
+            .attr("height", 80)
+            .attr("clip-path", "circle(40px at center)")
             .on("click", function(event, d) {
                 fetchChildren(d.data.id);
             });
@@ -76,8 +82,8 @@ function Body() {
                 .attr("y2", d => d.target.y);
 
             node
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y);
+                .attr("x", d => d.x)
+                .attr("y", d => d.y);
         });
     }, [nodes]);
 
