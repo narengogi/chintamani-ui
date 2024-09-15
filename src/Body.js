@@ -8,7 +8,7 @@ function Body() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/naren');
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/naren`);
                 if (!response.ok) {
                     console.log("Error fetching nodes:", response.statusText);
                     return;
@@ -24,7 +24,7 @@ function Body() {
 
     const fetchChildren = async (id) => {
         try {
-            const response = await fetch(`/children/${id}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/children/${id}`);
             if (!response.ok) {
                 console.log("Error fetching children:", response.statusText);
                 return;
