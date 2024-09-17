@@ -51,21 +51,13 @@ function Body() {
             .force("charge", d3.forceManyBody().strength(-50))
             .force("center", d3.forceCenter(svg.node().getBoundingClientRect().width / 2, svg.node().getBoundingClientRect().height / 2));
 
-        const link = svg
-            .selectAll("line")
-            .data(root.links())
-            .join("line")
-            .attr("stroke", "white")
-            .attr("stroke-opacity", 0.6);
-
         const node = svg
             .join("g")
             .selectAll("image")
             .data(root.descendants())
             .join("image")
             .attr("href", d => {
-                console.log(d.data.data.tags[0])
-                return `https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/Naren.png`
+                return `https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/${d.data.data.labels[0]}.png`
             })
             .attr("width", 80)
             .attr("height", 80)
@@ -73,13 +65,20 @@ function Body() {
             .on("click", function(event, d) {
                 fetchChildren(d.data.id);
             });
+        
+        const link = svg
+            .selectAll("line")
+            .data(root.links())
+            .join("line")
+            .attr("stroke", "white")
+            .attr("stroke-opacity", 0.6);
 
         simulation.on("tick", () => {
             link
-                .attr("x1", d => d.source.x)
-                .attr("y1", d => d.source.y)
-                .attr("x2", d => d.target.x)
-                .attr("y2", d => d.target.y);
+                .attr("x1", d => d.source.x + 40)
+                .attr("y1", d => d.source.y + 40)
+                .attr("x2", d => d.target.x + 40)
+                .attr("y2", d => d.target.y + 40);
 
             node
                 .attr("x", d => d.x)
