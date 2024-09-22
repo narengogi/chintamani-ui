@@ -7,6 +7,22 @@ function Body() {
     const [nodes, setNodes] = useState([]);
     const [selectedNode, setSelectedNode] = useState(null);
 
+    const sidepaneContainerStyle = {
+        // '@media (min-width: 768px)': {
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: 'white',
+            opacity: 0.9,
+            zIndex: 1000,
+            color: 'black',
+        // }
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -105,12 +121,10 @@ function Body() {
     }, [nodes]);
 
     return (
-        <div id="body" style={{ position: 'absolute', top: '0', left: '0', height: '100%', width: '100%', display: 'flex' }}>
-            <div style={{ flex: 1 }}>
+        <div id="body" style={{ height: '100vh', width: '100vw'}}>
                 <svg ref={canvasRef} width="100%" height="100%"></svg>
-            </div>
-            {selectedNode && <div style={{ flex: 1 }}>
-                <Sidepane selectedNode={selectedNode} />
+            {selectedNode && <div style={sidepaneContainerStyle}>
+                <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
             </div>}
         </div>
     );

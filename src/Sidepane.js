@@ -1,6 +1,6 @@
 import { reservedFields } from './constants';
 
-function Sidepane({ selectedNode }) {
+function Sidepane({ selectedNode, setSelectedNode }) {
 
     const containerStyle = {
         height: 'calc(100% - 2rem)',
@@ -44,6 +44,21 @@ function Sidepane({ selectedNode }) {
                         </div>
                     )
                 })}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'auto', paddingBottom: '1rem' }}>
+                <button 
+                    onClick={() => setSelectedNode(null)} 
+                    style={{
+                        padding: '0.5rem 1rem',
+                        fontSize: '1rem',
+                        backgroundColor: '#f0f0f0',
+                        border: '1px solid #ccc',
+                        borderRadius: '0.5rem',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Close
+                </button>
             </div>
         </div>
     )
