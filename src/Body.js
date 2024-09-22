@@ -51,6 +51,7 @@ function Body() {
         const simulation = d3.forceSimulation(root.descendants())
             .force("link", d3.forceLink(root.links()).id(d => d.id).distance(100))
             .force("charge", d3.forceManyBody().strength(-100))
+            .alphaDecay(0.01)
             .force("center", d3.forceCenter(svg.node().getBoundingClientRect().width / 2, svg.node().getBoundingClientRect().height / 2));
 
         const node = svg
