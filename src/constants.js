@@ -1,0 +1,1 @@
+export const reservedFields = ['title', 'labels', 'id', 'parentId'];
