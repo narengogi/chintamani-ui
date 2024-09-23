@@ -121,11 +121,11 @@ function Body() {
     }, [nodes]);
 
     return (
-        <div id="body" style={{ height: '100vh', width: '100vw'}}>
+        <div id="body" style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%'}}>
                 <svg ref={canvasRef} width="100%" height="100%"></svg>
-            {selectedNode && <div style={sidepaneContainerStyle}>
-                <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
-            </div>}
+            {/* {selectedNode && <div style={sidepaneContainerStyle}> */}
+                {/* <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} /> */}
+            {/* </div>} */}
         </div>
     );
 }
