@@ -48,7 +48,6 @@ function Body() {
                 return;
             }
             const data = await response.json();
-            console.log(data)
             const transformedData = data.map(d => d.node);
             setNodes(prevNodes => [...prevNodes, ...transformedData]);
             return data;
@@ -83,8 +82,18 @@ function Body() {
             .attr("clip-path", "circle(40px at center)")
             .attr("cursor", "pointer")
             .on("click", function (event, d) {
-                setSelectedNode(d.data.data);
-                fetchChildren(d.data.id);
+                const node = d3.select(this);
+                if (node.attr("expanded") === "true") {
+                    node.attr("expanded", false);
+                    setSelectedNode(null);
+                    // Delete all descendants
+                    const descendants = d.descendants().slice(1); // Exclude the clicked node itself
+                    setNodes(prevNodes => prevNodes.filter(node => !descendants.some(desc => desc.data.id === node.id)));
+                } else {
+                    node.attr("expanded", true);
+                    setSelectedNode(d.data.data);
+                    fetchChildren(d.data.id);
+                }
             })
             .on("mouseover", function(event, d) {
                 d3.select(this.parentNode)
