@@ -63,17 +63,44 @@ function Body() {
         const svg = d3.select(canvasRef.current);
         svg.style('background-color', 'black');
 
+        // Clear existing content
+        svg.selectAll("*").remove();
+
+        // Create a group for the zoomable content
+        const g = svg.append("g");
+
+        // Add zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
         const simulation = d3.forceSimulation(root.descendants())
             .force("link", d3.forceLink(root.links()).id(d => d.id).distance(100))
-            .force("charge", d3.forceManyBody().strength(-100))
+            .force("charge", d3.forceManyBody().strength(-300))
             .alphaDecay(0.01)
             .force("center", d3.forceCenter(svg.node().getBoundingClientRect().width / 2, svg.node().getBoundingClientRect().height / 2));
 
-        const node = svg
-            .join("g")
-            .selectAll("image")
+        const link = g
+            .selectAll("line")
+            .data(root.links())
+            .join("line")
+            .attr("stroke", "white")
+            .attr("stroke-opacity", 0.6);
+
+        const node = g
+            .selectAll("g")
             .data(root.descendants())
-            .join("image")
+            .join("g")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("image")
             .attr("href", d => {
                 return `https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/${d.data.data.labels[0].toLowerCase()}.png`
             })
@@ -109,12 +136,22 @@ function Body() {
                 d3.select(this.parentNode).select(".node-title").remove();
             });
 
-        const link = svg
-            .selectAll("line")
-            .data(root.links())
-            .join("line")
-            .attr("stroke", "white")
-            .attr("stroke-opacity", 0.6);
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
 
         simulation.on("tick", () => {
             link
@@ -124,8 +161,7 @@ function Body() {
                 .attr("y2", d => d.target.y + 20);
 
             node
-                .attr("x", d => d.x)
-                .attr("y", d => d.y);
+                .attr("transform", d => `translate(${d.x},${d.y})`);
         });
     }, [nodes]);
 
