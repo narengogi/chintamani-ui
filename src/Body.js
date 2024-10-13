@@ -9,41 +9,25 @@ function Body() {
 
     const sidepaneContainerStyle = {
         // '@media (min-width: 768px)': {
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            backgroundColor: 'white',
-            opacity: 0.9,
-            zIndex: 1000,
-            color: 'black',
+        position: 'absolute',
+        top: '0',
+        right: '0',
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'white',
+        opacity: 0.9,
+        zIndex: 1000,
+        color: 'black',
         // }
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/naren`);
-                if (!response.ok) {
-                    console.log("Error fetching nodes:", response.statusText);
-                    return;
-                }
-                const data = await response.json();
-                setNodes([data.node]);
-            } catch (error) {
-                console.error('Error fetching nodes:', error);
-            }
-        };
-        if (nodes.length === 0) fetchData();
-    }, []);
-
-    const fetchChildren = async (id) => {
+    // Fetch children of a node
+    const fetchChildren = async (id, clickCount) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/children/${id}`);
-            if (!response.ok) {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/children/${id}?page=${clickCount - 1}`);
+            if (response.status !== 200) {
                 console.log("Error fetching children:", response.statusText);
                 return;
             }
@@ -56,27 +40,47 @@ function Body() {
             return [];
         }
     };
+
+    // Fetch starting node on page load
     useEffect(() => {
-        if (nodes.length === 0) return;
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/naren`);
+                if (response.status !== 200) {
+                    console.log("Error fetching nodes:", response.statusText);
+                    return;
+                }
+                const data = await response.json();
+                setNodes([data.node]);
+            } catch (error) {
+                console.error('Error fetching nodes:', error);
+            }
+        };
+        if (nodes.length === 0) fetchData();
+    }, []);
+
+
+    useEffect(() => {
+        const svg = d3.select(canvasRef.current);
+        if (nodes.length === 0) {
+            svg.style('background-color', 'black');
+            // Create a group for the zoomable content
+            const g = svg.append("g");
+
+            // Add zoom behavior
+            const zoom = d3.zoom()
+                .scaleExtent([0.1, 4])
+                .on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                });
+
+            svg.call(zoom);
+            return;
+        };
         const stratifiedData = d3.stratify().id(d => d.id).parentId(d => d.parentId)(nodes);
         const root = d3.hierarchy(stratifiedData);
-        const svg = d3.select(canvasRef.current);
-        svg.style('background-color', 'black');
 
-        // Clear existing content
-        svg.selectAll("*").remove();
-
-        // Create a group for the zoomable content
-        const g = svg.append("g");
-
-        // Add zoom behavior
-        const zoom = d3.zoom()
-            .scaleExtent([0.1, 4])
-            .on("zoom", (event) => {
-                g.attr("transform", event.transform);
-            });
-
-        svg.call(zoom);
+        const g = svg.select("g");
 
         const simulation = d3.forceSimulation(root.descendants())
             .force("link", d3.forceLink(root.links()).id(d => d.id).distance(100))
@@ -118,11 +122,12 @@ function Body() {
                     setNodes(prevNodes => prevNodes.filter(node => !descendants.some(desc => desc.data.id === node.id)));
                 } else {
                     node.attr("expanded", true);
+                    node.attr("clickCount", (d.data.clickCount || 0) + 1);
                     setSelectedNode(d.data.data);
-                    fetchChildren(d.data.id);
+                    fetchChildren(d.data.id, node.attr("clickCount"));
                 }
             })
-            .on("mouseover", function(event, d) {
+            .on("mouseover", function (event, d) {
                 d3.select(this.parentNode)
                     .append("text")
                     .attr("class", "node-title")
@@ -132,7 +137,7 @@ function Body() {
                     .attr("text-anchor", "middle")
                     .attr("fill", "white");
             })
-            .on("mouseout", function() {
+            .on("mouseout", function () {
                 d3.select(this.parentNode).select(".node-title").remove();
             });
 
@@ -166,11 +171,11 @@ function Body() {
     }, [nodes]);
 
     return (
-        <div id="body" style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%'}}>
-                <svg ref={canvasRef} width="100%" height="100%"></svg>
-            {/* {selectedNode && <div style={sidepaneContainerStyle}> */}
-                {/* <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} /> */}
-            {/* </div>} */}
+        <div id="body" style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}>
+            <svg ref={canvasRef} width="100%" height="100%"></svg>
+            {/* {selectedNode && <div style={sidepaneContainerStyle}> 
+                <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
+            </div>} */}
         </div>
     );
 }
