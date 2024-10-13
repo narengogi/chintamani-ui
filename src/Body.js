@@ -79,8 +79,9 @@ function Body() {
         };
         const stratifiedData = d3.stratify().id(d => d.id).parentId(d => d.parentId)(nodes);
         const root = d3.hierarchy(stratifiedData);
-
         const g = svg.select("g");
+        // if (nodes.length === 1) {
+        // }
 
         const simulation = d3.forceSimulation(root.descendants())
             .force("link", d3.forceLink(root.links()).id(d => d.id).distance(100))
@@ -95,15 +96,11 @@ function Body() {
             .attr("stroke", "white")
             .attr("stroke-opacity", 0.6);
 
-        const node = g
-            .selectAll("g")
+        const node = g.selectAll("g")
             .data(root.descendants())
-            .join("g")
-            .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
+            .join("g");
 
+        // Add image to node
         node.append("image")
             .attr("href", d => {
                 return `https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/${d.data.data.labels[0].toLowerCase()}.png`
@@ -111,7 +108,11 @@ function Body() {
             .attr("width", 40)
             .attr("height", 40)
             .attr("clip-path", "circle(40px at center)")
-            .attr("cursor", "pointer")
+            .attr("cursor", "pointer");
+
+
+        // Click event listeners for nodes
+        node
             .on("click", function (event, d) {
                 const node = d3.select(this);
                 if (node.attr("expanded") === "true") {
@@ -123,12 +124,13 @@ function Body() {
                 } else {
                     node.attr("expanded", true);
                     node.attr("clickCount", (d.data.clickCount || 0) + 1);
+                    console.log(node.attr("clickCount"));
                     setSelectedNode(d.data.data);
                     fetchChildren(d.data.id, node.attr("clickCount"));
                 }
             })
             .on("mouseover", function (event, d) {
-                d3.select(this.parentNode)
+                d3.select(this)
                     .append("text")
                     .attr("class", "node-title")
                     .text(d.data.data.title)
@@ -138,8 +140,16 @@ function Body() {
                     .attr("fill", "white");
             })
             .on("mouseout", function () {
-                d3.select(this.parentNode).select(".node-title").remove();
+                d3.select(this).select(".node-title").remove();
             });
+
+        // Drag event listeners for nodes
+        node.call(
+            d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended)
+        );
 
         function dragstarted(event, d) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
