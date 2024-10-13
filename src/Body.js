@@ -16,7 +16,7 @@ function Body() {
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         opacity: 0.9,
         zIndex: 1000,
         color: 'black',
@@ -115,19 +115,20 @@ function Body() {
         node
             .on("click", function (event, d) {
                 const node = d3.select(this);
-                if (node.attr("expanded") === "true") {
-                    node.attr("expanded", false);
-                    setSelectedNode(null);
-                    // Delete all descendants
-                    const descendants = d.descendants().slice(1); // Exclude the clicked node itself
-                    setNodes(prevNodes => prevNodes.filter(node => !descendants.some(desc => desc.data.id === node.id)));
-                } else {
-                    node.attr("expanded", true);
-                    node.attr("clickCount", (d.data.clickCount || 0) + 1);
-                    console.log(node.attr("clickCount"));
-                    setSelectedNode(d.data.data);
-                    fetchChildren(d.data.id, node.attr("clickCount"));
-                }
+                node.attr("expanded", true);
+                node.attr("clickCount", parseInt(node.attr("clickCount") || 0) + 1);
+                console.log(node.attr("clickCount"));
+                setSelectedNode(d.data.data);
+                fetchChildren(d.data.id, node.attr("clickCount"));
+            })
+            .on("dblclick", function (event, d) {
+                console.log(d);
+                const node = d3.select(this);
+                node.attr("expanded", false);
+                setSelectedNode(null);
+                // Delete all descendants
+                const descendants = d.descendants().slice(1); // Exclude the clicked node itself
+                setNodes(prevNodes => prevNodes.filter(node => !descendants.some(desc => desc.data.id === node.id)));
             })
             .on("mouseover", function (event, d) {
                 d3.select(this)
