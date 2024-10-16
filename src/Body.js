@@ -7,6 +7,14 @@ function Body() {
     const [nodes, setNodes] = useState([]);
     const [selectedNode, setSelectedNode] = useState(null);
 
+    const bodyStyle = { 
+        position: 'absolute', 
+        top: '0', 
+        left: '0', 
+        width: '100%', 
+        height: '100%',
+    };
+
     const sidepaneContainerStyle = {
         // '@media (min-width: 768px)': {
         position: 'absolute',
@@ -20,6 +28,7 @@ function Body() {
         opacity: 0.9,
         zIndex: 1000,
         color: 'black',
+
         // }
     }
 
@@ -59,7 +68,6 @@ function Body() {
         if (nodes.length === 0) fetchData();
     }, []);
 
-
     useEffect(() => {
         const svg = d3.select(canvasRef.current);
         if (nodes.length === 0) {
@@ -80,14 +88,15 @@ function Body() {
         const stratifiedData = d3.stratify().id(d => d.id).parentId(d => d.parentId)(nodes);
         const root = d3.hierarchy(stratifiedData);
         const g = svg.select("g");
-        // if (nodes.length === 1) {
-        // }
 
         const simulation = d3.forceSimulation(root.descendants())
             .force("link", d3.forceLink(root.links()).id(d => d.id).distance(100))
-            .force("charge", d3.forceManyBody().strength(-300))
-            .alphaDecay(0.01)
+            .force("charge", d3.forceManyBody().strength(-50))
+            .alphaDecay(0.001)
+            .force("collision", d3.forceCollide(d => 20))
+            // .velocityDecay(0.3)
             .force("center", d3.forceCenter(svg.node().getBoundingClientRect().width / 2, svg.node().getBoundingClientRect().height / 2));
+        
 
         const link = g
             .selectAll("line")
@@ -131,17 +140,15 @@ function Body() {
                 setNodes(prevNodes => prevNodes.filter(node => !descendants.some(desc => desc.data.id === node.id)));
             })
             .on("mouseover", function (event, d) {
-                d3.select(this)
-                    .append("text")
+                svg.append("text")
                     .attr("class", "node-title")
                     .text(d.data.data.title)
-                    .attr("x", d.x + 40)
-                    .attr("y", d.y - 10)
-                    .attr("text-anchor", "middle")
+                    .attr("x", '2rem')
+                    .attr("y", '2rem')
                     .attr("fill", "white");
             })
             .on("mouseout", function () {
-                d3.select(this).select(".node-title").remove();
+                svg.selectAll(".node-title").remove();
             });
 
         // Drag event listeners for nodes
@@ -169,6 +176,8 @@ function Body() {
             d.fy = null;
         }
 
+        simulation.alpha(1).restart()
+
         simulation.on("tick", () => {
             link
                 .attr("x1", d => d.source.x + 20)
@@ -182,7 +191,7 @@ function Body() {
     }, [nodes]);
 
     return (
-        <div id="body" style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}>
+        <div id="body" style={bodyStyle}>
             <svg ref={canvasRef} width="100%" height="100%"></svg>
             {/* {selectedNode && <div style={sidepaneContainerStyle}> 
                 <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
