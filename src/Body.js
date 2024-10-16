@@ -94,7 +94,6 @@ function Body() {
             .force("charge", d3.forceManyBody().strength(-50))
             .alphaDecay(0.001)
             .force("collision", d3.forceCollide(d => 20))
-            // .velocityDecay(0.3)
             .force("center", d3.forceCenter(svg.node().getBoundingClientRect().width / 2, svg.node().getBoundingClientRect().height / 2));
         
 
