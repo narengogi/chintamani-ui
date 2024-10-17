@@ -42,7 +42,9 @@ function Body() {
             }
             const data = await response.json();
             const transformedData = data.map(d => d.node);
-            setNodes(prevNodes => [...prevNodes, ...transformedData]);
+            if (transformedData.length > 0) {
+                setNodes(prevNodes => [...prevNodes, ...transformedData]);
+            }
             return data;
         } catch (error) {
             console.error('Error fetching children:', error);
