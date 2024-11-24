@@ -1,0 +1,17 @@
+@font-face {
+    font-family: 'DroidSansMNerdFont';
+    src: url('../../fonts/DroidSansMNerdFontMono-Regular.otf') format('opentype');
+}
+
+
+.blog-content {
+    color: antiquewhite;
+    line-height: 20px;
+    font-family: 'DroidSansMNerdFont';
+    font-size: 18px;
+    max-width: 720px;
+    white-space: pre-wrap;
+    text-align: left;
+    margin-top: 1rem;
+    max-height: 80vh;
+}

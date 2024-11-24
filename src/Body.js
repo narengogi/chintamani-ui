@@ -194,9 +194,9 @@ function Body() {
     return (
         <div id="body" style={bodyStyle}>
             <svg ref={canvasRef} width="100%" height="100%"></svg>
-            {/* {selectedNode && <div style={sidepaneContainerStyle}> 
-                <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
-            </div>} */}
+            {selectedNode && <div style={sidepaneContainerStyle}> 
+                <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} nodes={nodes} />
+            </div>}
         </div>
     );
 }
