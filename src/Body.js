@@ -63,7 +63,12 @@ function Body() {
                     return;
                 }
                 const data = await response.json();
-                setNodes([data.node]);
+                console.log("Received start node:", data);
+                const startNode = {
+                    ...data.node,
+                    parentId: null
+                };
+                setNodes([startNode]);
             } catch (error) {
                 console.error('Error fetching nodes:', error);
             }
