@@ -57,7 +57,7 @@ function Body() {
         const fetchData = async () => {
             try {
                 const node = new URLSearchParams(window.location.search).get('node') || 'data';
-                const response = await fetch(`${process.env.SERVER_URL}/node/${node}`);
+                const response = await fetch(`${process.env.SERVER_URL}/start`);
                 if (response.status !== 200) {
                     console.log("Error fetching nodes:", response.statusText);
                     return;
