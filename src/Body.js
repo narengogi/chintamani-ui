@@ -35,7 +35,7 @@ function Body() {
     // Fetch children of a node
     const fetchChildren = async (id, clickCount) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/children/${id}?page=${clickCount - 1}`.replace(/\/+/g, '/'));
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/children/${id}?page=${clickCount - 1}`);
             if (response.status !== 200) {
                 console.log("Error fetching children:", response.statusText);
                 return;
