@@ -56,7 +56,7 @@ function Body() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const node = new URLSearchParams(window.location.search).get('node') || 'Narendranath Gogineni';
+                const node = new URLSearchParams(window.location.search).get('node') || 'data';
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/node/${node}`);
                 if (response.status !== 200) {
                     console.log("Error fetching nodes:", response.statusText);
