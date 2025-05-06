@@ -120,7 +120,15 @@ function Body() {
             .attr("height", 40)
             .attr("clip-path", "circle(40px at center)")
             .attr("cursor", "pointer");
-
+        
+        const text = node.append("text")
+            .attr("class", "node-title")
+            .text(d => d.data.data.title)
+            .attr("x", 40)
+            .attr("y", 40)
+            .attr("fill", "white");
+            
+        
 
         // Click event listeners for nodes
         node
@@ -141,17 +149,17 @@ function Body() {
                 const descendants = d.descendants().slice(1); // Exclude the clicked node itself
                 setNodes(prevNodes => prevNodes.filter(node => !descendants.some(desc => desc.data.id === node.id)));
             })
-            .on("mouseover", function (event, d) {
-                svg.append("text")
-                    .attr("class", "node-title")
-                    .text(d.data.data.title)
-                    .attr("x", '2rem')
-                    .attr("y", '2rem')
-                    .attr("fill", "white");
-            })
-            .on("mouseout", function () {
-                svg.selectAll(".node-title").remove();
-            });
+            // .on("mouseover", function (event, d) {
+            //     svg.append("text")
+            //         .attr("class", "node-title")
+            //         .text(d.data.data.title)
+            //         .attr("x", '2rem')
+            //         .attr("y", '2rem')
+            //         .attr("fill", "white");
+            // })
+            // .on("mouseout", function () {
+            //     svg.selectAll(".node-title").remove();
+            // });
 
         // Drag event listeners for nodes
         node.call(
@@ -195,9 +203,9 @@ function Body() {
     return (
         <div id="body" style={bodyStyle}>
             <svg ref={canvasRef} width="100%" height="100%"></svg>
-            {selectedNode && <div style={sidepaneContainerStyle}> 
+            {/* {selectedNode && <div style={sidepaneContainerStyle}> 
                 <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} nodes={nodes} />
-            </div>}
+            </div>} */}
         </div>
     );
 }
