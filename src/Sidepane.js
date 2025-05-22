@@ -47,9 +47,9 @@ function Sidepane({ selectedNode, setSelectedNode, nodes }) {
     return (
         <div className="sidepaneContainer" style={containerStyle}>
             <div className="title-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img className='glitch' src={`https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/${selectedNode.labels[0].toLowerCase()}.png`} alt={selectedNode.title} width={'auto'} height={50} style={{ marginRight: '25px' }} />
+                <img  src={`https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/${selectedNode.labels[0].toLowerCase()}.png`} alt={selectedNode.title} width={'auto'} height={50} style={{ marginRight: '25px' }} />
                 <h1 className="flyer">{selectedNode.title}</h1>
-                <img className='glitch' src={`https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/${selectedNode.labels[0].toLowerCase()}.png`} alt={selectedNode.title} width={'auto'} height={50} style={{ marginLeft: '25px' }} />
+                <img src={`https://raw.githubusercontent.com/narengogi/chintamani-ui/main/assets/icons/${selectedNode.labels[0].toLowerCase()}.png`} alt={selectedNode.title} width={'auto'} height={50} style={{ marginLeft: '25px' }} />
             </div>
             <div className="tags" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <h3>Tags</h3>

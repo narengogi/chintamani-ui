@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import Sidepane from './Sidepane';
+import ContentStyles from './content_templates';
 
 function Body() {
     const canvasRef = useRef(null);
@@ -203,9 +204,9 @@ function Body() {
     return (
         <div id="body" style={bodyStyle}>
             <svg ref={canvasRef} width="100%" height="100%"></svg>
-            {/* {selectedNode && <div style={sidepaneContainerStyle}> 
+            {selectedNode && ContentStyles.get(selectedNode.labels[0].toUpperCase()) && <div style={sidepaneContainerStyle}> 
                 <Sidepane selectedNode={selectedNode} setSelectedNode={setSelectedNode} nodes={nodes} />
-            </div>} */}
+            </div>}
         </div>
     );
 }
